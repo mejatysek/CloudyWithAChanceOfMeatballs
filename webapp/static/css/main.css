@@ -1,0 +1,21 @@
+body {
+    padding-top: 5rem;
+}
+.starter-template {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.map{
+    height: 40rem;
+}
+
+.cities{
+    margin-bottom: 1.5rem;
+}
+.spacer{
+    padding-top: 6rem;
+}
+main{
+    height: 40rem;
+}
