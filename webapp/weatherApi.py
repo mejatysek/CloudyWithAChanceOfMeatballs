@@ -16,7 +16,7 @@ class WeatherApi(object):
 
     def __init__(self, store):
         self._store = store
-        with open(Path("credentials.json")) as credential:
+        with open(str(Path("credentials.json"))) as credential:
             data = json.loads(credential.read())
             self._api_key = data['acuweather']
             self.url = "http://dataservice.accuweather.com/{method}"
