@@ -72,7 +72,7 @@ def del_city(user_id, location_key):
 def forecast_icon(location_key):
     forecast = acuAPI.get_5_day_forecast(location_key)['DailyForecasts'][0]
     icon_num = forecast['Day']['Icon']
-    with open(Path("static/icons/{num}.svg".format(num=icon_num))) as icon:
+    with open("static/icons/{num}.svg".format(num=icon_num)) as icon:
         icon_data = Template(icon.read())
         result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['Temperature']['Minimum']['Value'])))), max=str(round(Decimal(forecast['Temperature']['Maximum']['Value']))))
         return Response(response=result, status=200, mimetype="image/svg+xml")
@@ -92,7 +92,6 @@ def api_forecast(user_id):
         return jsonify(result)
     else:
         return Response("Bad id", status=404)
-
 
 
 if __name__ == '__main__':
