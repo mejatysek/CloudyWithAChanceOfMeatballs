@@ -30,7 +30,7 @@ Api provide weather icon's with embeded temperature and forecast's for user's ci
 App deloyed at [via.mejty.cz](https://via.mejty.cz/).
 
 For deploy own copy use any of [Flask deploy options](http://flask.pocoo.org/docs/0.12/deploying/).
-Before run app is necesary add credential file to `webapp/credential.json` with your acuWeather and Google maps API keys.
+Before run app is necesary add credential file to `webapp/credentials.json` with your acuWeather and Google maps API keys.
 
 ### Credentials file
 ```json
