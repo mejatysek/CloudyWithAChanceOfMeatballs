@@ -33,7 +33,7 @@ For deploy own copy use any of [Flask deploy options](http://flask.pocoo.org/doc
 Before run app is necesary add credential file to `webapp/credentials.json` with your acuWeather and Google maps API keys.
 
 ### Credentials file
-```javascript
+```json
 {
   "maps": "$YourAcuWeatherApiKey",
   "acuweather": "$YourGoogleMapsApiKey"
