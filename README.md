@@ -8,7 +8,7 @@ It's simple app displaying one day weather forecast for user's selected cities o
 
 ## Apis
 ### Used
- * [AccuWauther](https://developer.accuweather.com/accuweather-locations-api/apis)
+ * [AcuWeather](https://developer.accuweather.com/accuweather-locations-api/apis)
  * [Google maps](https://developers.google.com/maps/)
 
 ### Provided
