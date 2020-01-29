@@ -1,9 +1,9 @@
-certifi==2019.6.16
+certifi==2019.11.28
 chardet==3.0.4
 click==6.7
-Flask==1.1.0
+Flask==1.1.1
 get==2019.4.13
-gunicorn==19.9.0
+gunicorn==20.0.4
 hashids==1.2.0
 idna==2.7
 itsdangerous==0.24
@@ -17,4 +17,4 @@ request==2019.4.13
 requests==2.22.0
 sortedcontainers==2.1.0
 urllib3==1.25.3
-Werkzeug==0.15.4
+Werkzeug==0.16.1
