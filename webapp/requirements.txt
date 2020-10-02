@@ -15,5 +15,5 @@ query-string==2019.4.13
 redis==2.10.6
 requests==2.23.0
 sortedcontainers==2.1.0
-urllib3==1.25.8
+urllib3==1.25.9
 Werkzeug==0.16.1
