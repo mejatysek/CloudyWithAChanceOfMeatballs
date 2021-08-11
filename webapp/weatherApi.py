@@ -16,7 +16,7 @@ class WeatherApi(object):
 
     def __init__(self, store):
         self._store = store
-        with open(str(Path("credentials.json"))) as credential:
+        with Path("credentials.json").open() as credential:
             data = json.loads(credential.read())
             self._api_key = data['acuweather']
             self.url = "http://dataservice.accuweather.com/{method}"
@@ -56,8 +56,6 @@ class WeatherApi(object):
         return self._make_request(method, ex=60 * 60 * 4, metric=metric, language=language_code)
 
 
-# http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=YQKkcHbsHWXqF9Fx9fchoAGY95QeheYA&q=Chomu&language=cs
-# http://dataservice.accuweather.com/accuweather-locations-api/apis/get/locations/v1/cities/autocomplete?q=Chomu&language=cs&apikey=YQKkcHbsHWXqF9Fx9fchoAGY95QeheYA
 if __name__=="__main__":
     api = WeatherApi(Store())
     logging.getLogger().setLevel(logging.DEBUG)
