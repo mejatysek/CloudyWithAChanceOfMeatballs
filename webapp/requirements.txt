@@ -14,3 +14,4 @@ requests==2.26.0
 sortedcontainers==2.2.2
 urllib3==1.26.6
 Werkzeug==2.0.1
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
