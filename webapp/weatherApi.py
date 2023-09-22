@@ -14,13 +14,11 @@ __author__ = 'mejty'
 
 class WeatherApi(object):
 
-    def __init__(self, store):
+    def __init__(self, store, credentials):
         self._store = store
-        with Path("credentials.json").open() as credential:
-            data = json.loads(credential.read())
-            self._api_key = data['acuweather']
-            self.url = "http://dataservice.accuweather.com/{method}"
-            self.logger = logging.getLogger(__name__)
+        self._api_key = credentials.api_key
+        self.url = "http://dataservice.accuweather.com/{method}"
+        self.logger = logging.getLogger(__name__)
 
     def _stringify_chars(self, **kwargs):
         dictionary = SortedDict(kwargs)
