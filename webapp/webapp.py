@@ -4,13 +4,15 @@ from decimal import Decimal
 
 from flask import Flask, render_template, redirect, request, jsonify, Response
 
+from creds import Credentials
 from store import Store
 from weatherApi import WeatherApi
 
 app = Flask(__name__)
 
 store = Store()
-acuAPI = WeatherApi(store)
+credentials = Credentials()
+acuAPI = WeatherApi(store, credentials)
 
 
 @app.route('/')
@@ -35,7 +37,12 @@ def main(user_id):
         forecasts = []
         for k, v in cities.items():
             forecasts.append({"id": k, "lat": v['GeoPosition']['Latitude'], "long": v['GeoPosition']['Longitude'], 'icon': "/icon/{k}/".format(k=k)})
-        return render_template("forecast.html", user_id=user_id, cities=cities, forecasts=forecasts, show_id=store.show_user_message(user_id))
+        return render_template(
+            "forecast.html",
+            map_key=credentials.maps_key,
+            user_id=user_id, cities=cities,
+            forecasts=forecasts,
+            show_id=store.show_user_message(user_id))
     else:
         return redirect("/", code=302)
 
@@ -74,7 +81,8 @@ def forecast_icon(location_key):
     icon_num = forecast['Day']['Icon']
     with open("static/icons/{num}.svg".format(num=icon_num)) as icon:
         icon_data = Template(icon.read())
-        result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['Temperature']['Minimum']['Value'])))), max=str(round(Decimal(forecast['Temperature']['Maximum']['Value']))))
+        result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['Temperature']['Minimum']['Value'])))),
+                                      max=str(round(Decimal(forecast['Temperature']['Maximum']['Value']))))
         return Response(response=result, status=200, mimetype="image/svg+xml")
 
 
