@@ -19,7 +19,7 @@ weatherApi = WeatherApi(store)
 def index():
     user_id = request.args.get('userid', '', type=str)
     if store.id_exists(user_id):
-        return redirect("/{user_id}/".format(user_id=user_id), code=302)
+        return redirect(url_for('main', user_id=user_id), code=302)
     else:
         return render_template('index.html', user_id=user_id)
 
