@@ -29,7 +29,7 @@ Api provide weather icon's with embeded temperature and forecast's for user's ci
 ## Deployment
 App deloyed at [via.mejty.cz](https://via.mejty.cz/).
 
-For deploy own copy use any of [Flask deploy options](http://flask.pocoo.org/docs/0.12/deploying/).
+For deploy own copy use any of [Flask deploy options](https://flask.palletsprojects.com/en/stable/deploying/).
 Before run app is necesary add credential file to `webapp/credentials.json` with your Google maps API keys.
 
 ### Credentials file
