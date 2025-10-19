@@ -2,7 +2,7 @@ from pathlib import Path
 from string import Template
 from decimal import Decimal
 
-from flask import Flask, render_template, redirect, request, jsonify, Response
+from flask import Flask, render_template, redirect, request, jsonify, Response, url_for
 
 from creds import Credentials
 from store import Store
@@ -27,7 +27,7 @@ def index():
 @app.route('/id/')
 def gen_id():
     new_id = store.get_new_id()
-    return redirect("/{user_id}/".format(user_id=new_id), code=302)
+    return redirect(url_for('main', user_id=new_id), code=302)
 
 
 @app.route('/<user_id>/')
@@ -61,7 +61,7 @@ def add_city(user_id, location_key):
     if store.id_exists(user_id):
         city = weatherApi.get_city_by_id(location_key)
         store.add_user_city(user_id, city)
-        return redirect("/{user_id}/".format(user_id=user_id))
+        return redirect(url_for('main', user_id=user_id))
     else:
         redirect("/", code=302)
 
@@ -70,7 +70,7 @@ def add_city(user_id, location_key):
 def del_city(user_id, location_key):
     if store.id_exists(user_id):
         store.del_user_city(user_id, location_key)
-        return redirect("/{user_id}/".format(user_id=user_id))
+        return redirect(url_for('main', user_id=user_id))
     else:
         redirect("/", code=302)
 
