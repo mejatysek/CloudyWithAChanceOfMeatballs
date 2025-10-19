@@ -81,7 +81,7 @@ def forecast_icon(location_key):
 
     forecast = weatherApi.get_day_forecast(city["latitude"], city["longitude"])
     icon_num =  forecast['daily']['weathercode'][0]
-    with open("/home/mejty/workspace/personal/CloudyWithAChanceOfMeatballs/webapp/static/icons/{num}.svg".format(num=icon_num)) as icon:
+    with open("static/icons/{num}.svg".format(num=icon_num)) as icon:
         icon_data = Template(icon.read())
         result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['daily']['temperature_2m_min'][0])))),
                                       max=str(round(Decimal(forecast['daily']['temperature_2m_max'][0]))))
