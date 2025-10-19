@@ -14,8 +14,8 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/css/main.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css" rel="stylesheet">
 
 
 </head>
@@ -69,7 +69,7 @@
         <div class="card cities">
             <div class="card-body">
                 {% for k,v in cities.items() %}
-                    <a href="/{{ user_id }}/city/{{ k }}/del/" class="btn btn-primary">{{ v["LocalizedName"] }} <i class="far fa-times-circle"></i></a>
+                    <a href="/{{ user_id }}/city/{{ k }}/del/" class="btn btn-primary">{{ v["name"] }} <i class="far fa-times-circle"></i></a>
                 {% endfor %}
             </div>
         </div>
@@ -79,17 +79,23 @@
             function initMap() {
                 map = new google.maps.Map(document.getElementById('map'), {
                     center: {lat: -34.397, lng: 150.644},
-                    zoom: 8
+                    zoom: 8,
+                    mapId: 'weatherMap',
                 });
                 bounds  = new google.maps.LatLngBounds();
                 {% for forecast in forecasts %}
-                    city{{ forecast['id'] }} = new google.maps.Marker({
+                    const glyphImg{{ forecast['id'] }} = document.createElement('img');
+                    glyphImg{{ forecast['id'] }}.src = '{{ forecast['icon']}}';
+                    glyphImg{{ forecast['id'] }}.style = 'width:7em';
+                    const glyphSvgPinElement{{ forecast['id'] }} = new google.maps.marker.PinElement({
+                        scale: 1.8,
+                        glyph: glyphImg{{ forecast['id'] }},
+                    });
+                    city{{ forecast['id'] }} = new google.maps.marker.AdvancedMarkerElement({
                         map:map,
                         position: {lat: {{ forecast['lat'] }}, lng: {{ forecast['long'] }}},
-                        icon: {
-                            url: "{{ forecast['icon']}}",
-                            scaledSize: new google.maps.Size(80, 110),
-                        }
+                        content: glyphSvgPinElement{{ forecast['id'] }}.element,
+                        title: '{{ forecast['name'] }}',
                     });
                     bounds.extend(city{{ forecast['id'] }}.position)
                 {% endfor %}
@@ -97,8 +103,7 @@
                 map.panToBounds(bounds);
             }
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&callback=initMap"
-                async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&callback=initMap&libraries=marker&loading=async"></script>
     {% endif %}
     </div>
 
@@ -107,15 +112,14 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-{#<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-slim.min.js"><\/script>')</script>#}
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/select2/dist/js/select2.min.js"></script>
 <script src="https://unpkg.com/popper.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
 <script>
-    $.fn.select2.defaults.set( "theme", "bootstrap" );
+    $.fn.select2.defaults.set( "theme", "bootstrap4" );
     $(document).ready(function() {
         $('#select_city').select2({
             ajax: {

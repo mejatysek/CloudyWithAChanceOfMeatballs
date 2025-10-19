@@ -11,5 +11,4 @@ class Credentials(object):
     def __init__(self):
         with Path("credentials.json").open() as credential:
             data = json.loads(credential.read())
-            self.api_key = data['acuweather']
             self.maps_key = data['maps']

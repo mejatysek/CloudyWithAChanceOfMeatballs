@@ -39,7 +39,7 @@ class Store(object):
         return self._redis.exists(self._prepare_key(user_id, "exists"))
 
     def add_user_city(self, user_id, city):
-        self._redis.hset(self._prepare_key(user_id, "cities"), city['Key'], pickle.dumps(city, protocol=4))
+        self._redis.hset(self._prepare_key(user_id, "cities"), city['id'], pickle.dumps(city, protocol=4))
 
     def del_user_city(self, user_id, location_key):
         self._redis.hdel(self._prepare_key(user_id, "cities"), location_key)
@@ -52,12 +52,12 @@ class Store(object):
         else:
             return {}
 
-    def cache_acu(self, method, arguments, data, ex=None):
+    def cache_request(self, method, arguments, data, ex=None):
         key = "{method}:{arguments}".format(method=method, arguments=arguments)
-        self._redis.set(self._prepare_key("acuweather", key), pickle.dumps(data, protocol=4), ex=ex)
+        self._redis.set(self._prepare_key("apirequest", key), pickle.dumps(data, protocol=4), ex=ex)
 
-    def get_cached_acu(self, method, arguments):
+    def get_cached_request(self, method, arguments):
         key = "{method}:{arguments}".format(method=method, arguments=arguments)
-        data = self._redis.get(self._prepare_key("acuweather", key))
+        data = self._redis.get(self._prepare_key("apirequest", key))
         return pickle.loads(data) if data else data
 

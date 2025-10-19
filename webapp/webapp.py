@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 store = Store()
 credentials = Credentials()
-acuAPI = WeatherApi(store, credentials)
+weatherApi = WeatherApi(store)
 
 
 @app.route('/')
@@ -36,7 +36,7 @@ def main(user_id):
         cities = store.get_user_cities(user_id)
         forecasts = []
         for k, v in cities.items():
-            forecasts.append({"id": k, "lat": v['GeoPosition']['Latitude'], "long": v['GeoPosition']['Longitude'], 'icon': "/icon/{k}/".format(k=k)})
+            forecasts.append({"id": k, "lat": v['latitude'], "long": v['longitude'], "name": v['name'], "icon": "/icon/{k}/".format(k=k)})
         return render_template(
             "forecast.html",
             map_key=credentials.maps_key,
@@ -51,15 +51,15 @@ def main(user_id):
 def search_city():
     query = request.args.get('q', '', type=str)
     if len(query) > 3:
-        result = acuAPI.search_city(query)
-        data = {"results": [{"id": v["Key"], "text": "{city}({country})".format(city=v['LocalizedName'], country=v['Country']['ID'])} for v in result]}
+        result = weatherApi.search_city(query).get("results", [])
+        data = {"results": [{"id": v["id"], "text": "{city}({country})".format(city=v['name'], country=v['country_code'])} for v in result]}
         return jsonify(data)
 
 
 @app.route('/<user_id>/city/<location_key>/add/')
 def add_city(user_id, location_key):
     if store.id_exists(user_id):
-        city = acuAPI.get_city(location_key)
+        city = weatherApi.get_city_by_id(location_key)
         store.add_user_city(user_id, city)
         return redirect("/{user_id}/".format(user_id=user_id))
     else:
@@ -77,12 +77,14 @@ def del_city(user_id, location_key):
 
 @app.route('/icon/<location_key>/')
 def forecast_icon(location_key):
-    forecast = acuAPI.get_5_day_forecast(location_key)['DailyForecasts'][0]
-    icon_num = forecast['Day']['Icon']
-    with open("static/icons/{num}.svg".format(num=icon_num)) as icon:
+    city = weatherApi.get_city_by_id(location_key)
+
+    forecast = weatherApi.get_day_forecast(city["latitude"], city["longitude"])
+    icon_num =  forecast['daily']['weathercode'][0]
+    with open("/home/mejty/workspace/personal/CloudyWithAChanceOfMeatballs/webapp/static/icons/{num}.svg".format(num=icon_num)) as icon:
         icon_data = Template(icon.read())
-        result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['Temperature']['Minimum']['Value'])))),
-                                      max=str(round(Decimal(forecast['Temperature']['Maximum']['Value']))))
+        result = icon_data.substitute(min='{0: >2}'.format(str(round(Decimal(forecast['daily']['temperature_2m_min'][0])))),
+                                      max=str(round(Decimal(forecast['daily']['temperature_2m_max'][0]))))
         return Response(response=result, status=200, mimetype="image/svg+xml")
 
 
@@ -92,11 +94,18 @@ def api_forecast(user_id):
         cities = store.get_user_cities(user_id)
         result = []
         for k, v in cities.items():
-            forecast = acuAPI.get_5_day_forecast(k)
+            forecast = weatherApi.get_day_forecast(v["latitude"], v["longitude"])
             forecast_icon_url = "/icon/{k}/".format(k=k)
-            forecast['DailyForecasts'] = forecast['DailyForecasts'][0]
-            forecast['Cloudy'] = {'Name': v['LocalizedName'], 'GeoPosition': v['GeoPosition'], 'ForecastIconUrl': forecast_icon_url}
-            result.append(forecast)
+            daily_forecast = {
+                "Date": forecast["daily"]["time"][0],
+                "Temperature": {
+                    "Minimum": {"Value": forecast["daily"]["temperature_2m_min"][0]},
+                    "Maximum": {"Value": forecast["daily"]["temperature_2m_max"][0]},
+                },
+                "Day": {"Icon": forecast["daily"]["weathercode"][0]}
+            }
+            cloudy_data = {'Name': v['name'], 'GeoPosition': {'Latitude': v['latitude'], 'Longitude': v['longitude']}, 'ForecastIconUrl': forecast_icon_url}
+            result.append({"DailyForecasts": [daily_forecast], "Cloudy": cloudy_data})
         return jsonify(result)
     else:
         return Response("Bad id", status=404)

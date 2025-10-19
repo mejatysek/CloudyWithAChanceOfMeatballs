@@ -104,3 +104,4 @@ ENV/
 *credentials*
 *.data
 webapp/updateDeps.py
+.vscode/
