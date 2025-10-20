@@ -81,5 +81,5 @@ if __name__=="__main__":
     logging.getLogger().addHandler(logging.StreamHandler())
     data = api.search_city("Chomutov")
     print(data)
-    forecast = api.get_5_day_forecast(data["results"][0]["latitude"], data["results"][0]["longitude"])
+    forecast = api.get_day_forecast(data["results"][0]["latitude"], data["results"][0]["longitude"])
     print(forecast)
